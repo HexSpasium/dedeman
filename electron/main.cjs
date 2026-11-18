@@ -26,14 +26,17 @@ function sendState() {
 }
 
 function setActive(id) {
-  const item = views.get(id);
-  if (!item || !mainWindow) return;
-  activeTabId = id;
-  for (const [key, value] of views) {
-    if (key === id) mainWindow.contentView.addChildView(value.view);
-    else mainWindow.contentView.removeChildView(value.view);
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  const item = id ? views.get(id) : null;
+  if (id && !item) return;
+  activeTabId = id || null;
+  for (const value of views.values()) {
+    try { mainWindow.contentView.removeChildView(value.view); } catch {}
   }
-  if (item.bounds) item.view.setBounds(item.bounds);
+  if (item) {
+    mainWindow.contentView.addChildView(item.view);
+    if (item.bounds) item.view.setBounds(item.bounds);
+  }
   sendState();
 }
 
@@ -106,6 +109,8 @@ function createWindow() {
     event.preventDefault();
   });
   mainWindow.on("resize", () => mainWindow?.webContents.send("browser:resize"));
+  mainWindow.on("maximize", () => mainWindow?.webContents.send("browser:resize"));
+  mainWindow.on("unmaximize", () => mainWindow?.webContents.send("browser:resize"));
   mainWindow.on("closed", () => { mainWindow = null; for (const x of views.values()) x.view.webContents.close(); views.clear(); });
   if (isDev) mainWindow.loadURL("http://localhost:5173");
   else mainWindow.loadFile(path.join(__dirname, "..", "dist", "index.html"));
@@ -121,11 +126,16 @@ ipcMain.handle("browser:set-allowlist", (_event, domains) => {
 });
 ipcMain.handle("browser:open", (_event, url, id) => createBrowserTab(url, id));
 ipcMain.handle("browser:activate", (_event, id) => { setActive(id); return true; });
+ipcMain.handle("browser:hide", () => { setActive(null); return true; });
 ipcMain.handle("browser:close", (_event, id) => { closeTab(id); return true; });
 ipcMain.handle("browser:bounds", (_event, rect) => {
   if (!rect || ![rect.x,rect.y,rect.width,rect.height].every(Number.isFinite)) return false;
   const item = views.get(activeTabId);
-  if (item) { item.bounds = rect; item.view.setBounds(rect); }
+  if (item) {
+    const safe = { x: Math.max(0, Math.round(rect.x)), y: Math.max(0, Math.round(rect.y)), width: Math.max(0, Math.round(rect.width)), height: Math.max(0, Math.round(rect.height)) };
+    item.bounds = safe;
+    item.view.setBounds(safe);
+  }
   return true;
 });
 ipcMain.handle("browser:back", () => { const v=views.get(activeTabId)?.view.webContents; if(v?.canGoBack())v.goBack(); });
