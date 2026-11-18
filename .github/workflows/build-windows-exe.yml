@@ -26,7 +26,7 @@ jobs:
           VITE_SUPABASE_URL: https://oxvftybytcwpdcqygxpp.supabase.co
           VITE_SUPABASE_ANON_KEY: sb_publishable_acZH00xxykLW9aPQzd2CxA_mt-UoTvR
       - name: Package Windows installer
-        run: npx electron-builder --win nsis --x64
+        run: npx electron-builder --win nsis --x64 --publish never
       - name: Upload EXE installer
         uses: actions/upload-artifact@v4
         with:
