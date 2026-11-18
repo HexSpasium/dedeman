@@ -18,3 +18,17 @@ main:has(.external-fallback){display:flex;flex-direction:column}main:has(.extern
 .app.browsing .frame-tools{flex:0 0 36px;padding:4px 14px}
 .app.browsing>footer{flex:0 0 34px;height:34px}
 @media(max-width:600px){.app.browsing>header{padding:0 12px}.app.browsing .tab>button:first-child{padding:0 7px;font-size:10px}.app.browsing .tab>button:last-child{flex-basis:28px;width:28px}.app.browsing .home{padding:0 8px;font-size:10px}.app.browsing .address{padding:0 9px}.app.browsing .frame-tools{display:none}.app.browsing>footer{display:none}}
+
+
+/* Developer attribution and emergency support footer */
+.app>footer.workspace-footer{height:auto;min-height:58px;flex:0 0 auto;gap:18px;padding:10px 4.5vw;flex-wrap:wrap;letter-spacing:0;font-size:10px;background:#111216;border-top:1px solid #ffffff16}
+.workspace-footer .footer-security{white-space:nowrap}
+.workspace-footer .footer-credit{display:flex;align-items:center;justify-content:center;gap:4px;color:#a4a4ab;text-align:center;flex:1 1 360px;line-height:1.5}
+.workspace-footer .footer-credit button{border:0;background:transparent;padding:0;color:#d8c49e;font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.workspace-footer .footer-credit button:hover{color:#f2dfb8}
+.workspace-footer .footer-support{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.workspace-footer .footer-support b{color:#c8ae7c;font-size:9px;font-weight:600}
+.workspace-footer .footer-support a{color:#f1f1f2;text-decoration:none;font-weight:700;letter-spacing:.4px}
+.workspace-footer .footer-support a:hover{color:#d8c49e;text-decoration:underline}
+.app.browsing>footer.workspace-footer{min-height:58px;flex:0 0 58px}
+@media(max-width:760px){.app>footer.workspace-footer{justify-content:center;gap:8px 18px;padding:10px 12px}.workspace-footer .footer-credit{order:3;flex-basis:100%;font-size:9px}.workspace-footer .footer-security{font-size:8px}.workspace-footer .footer-support{font-size:9px}.app.browsing>footer.workspace-footer{display:flex;min-height:58px;flex-basis:58px}}
