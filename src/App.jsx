@@ -9,7 +9,8 @@ export default function App(){
  const [sites,setSites]=useState([]),[session,setSession]=useState(null),[admin,setAdmin]=useState(false),[adminEmail,setAdminEmail]=useState("");
  const [panel,setPanel]=useState(false),[email,setEmail]=useState("hunempirez@gmail.com"),[password,setPassword]=useState("");
  const [form,setForm]=useState({name:"",url:""}),[err,setErr]=useState(""),[msg,setMsg]=useState(""),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[search,setSearch]=useState("");
- const [tabs,setTabs]=useState([]),[active,setActive]=useState(null),[frameKey,setFrameKey]=useState(0),[frameLoading,setFrameLoading]=useState(false);\n const browserSurfaceRef=React.useRef(null); const desktop=!!window.parkDedemanDesktop?.isDesktop;
+ const [tabs,setTabs]=useState([]),[active,setActive]=useState(null),[frameKey,setFrameKey]=useState(0),[frameLoading,setFrameLoading]=useState(false);
+  const browserSurfaceRef=React.useRef(null); const desktop=!!window.parkDedemanDesktop?.isDesktop;
  const [cloud,setCloud]=useState(supabase?"Bağlanıyor":"Supabase yapılandırması gerekli");
  async function load(){if(!supabase){setLoading(false);return}const {data,error}=await supabase.from("park_dedeman_sites").select("id,name,url,icon_url,is_enabled,sort_order,allowed_domains").order("sort_order");if(error){setErr(error.message);setCloud("Bağlantı hatası")}else{setSites(data||[]);setCloud("Bulut bağlantısı aktif");if(desktop)await window.parkDedemanDesktop.setAllowlist((data||[]).filter(s=>s.is_enabled).flatMap(s=>s.allowed_domains||[new URL(s.url).hostname]))}setLoading(false)}
  async function verify(s){if(!s?.user?.id)return false;const {data}=await supabase.from("park_dedeman_admins").select("role,is_active").eq("user_id",s.user.id).maybeSingle();const ok=!!data?.is_active&&["owner","admin"].includes(data.role);setAdmin(ok);setAdminEmail(ok?s.user.email:"");return ok}
