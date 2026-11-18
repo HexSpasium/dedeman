@@ -44,14 +44,19 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "icon": "build/park-dedeman.ico",
+      "artifactName": "Park-Dedeman-Browser-Setup-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Park Dedeman Browser"
+      "shortcutName": "Park Dedeman Browser",
+      "installerIcon": "build/park-dedeman.ico",
+      "uninstallerIcon": "build/park-dedeman.ico",
+      "installerHeaderIcon": "build/park-dedeman.ico"
     }
   }
 }
