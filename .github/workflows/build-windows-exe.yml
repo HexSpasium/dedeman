@@ -1,4 +1,4 @@
-name: Build Windows EXE
+name: Build Park Dedeman Windows Setup
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build-windows:
@@ -14,23 +14,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install icon tooling
+        run: python -m pip install --upgrade pillow
+
+      - name: Create Park Dedeman application icon
+        run: python scripts/create-icon.py
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
       - name: Build web interface
         run: npm run build
         env:
           VITE_SUPABASE_URL: https://oxvftybytcwpdcqygxpp.supabase.co
           VITE_SUPABASE_ANON_KEY: sb_publishable_acZH00xxykLW9aPQzd2CxA_mt-UoTvR
+
       - name: Package Windows installer
         run: npx electron-builder --win nsis --x64 --publish never
-      - name: Upload EXE installer
+
+      - name: Upload setup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Park-Dedeman-Windows-Installer
+          name: Park-Dedeman-Windows-Setup
           path: dist-electron/*.exe
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish downloadable Windows setup
+        uses: ncipollo/release-action@v1
+        with:
+          tag: windows-setup-${{ github.run_number }}
+          name: Park Dedeman Browser Windows Setup ${{ github.run_number }}
+          artifacts: dist-electron/*.exe
+          artifactErrorsFailBuild: true
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
