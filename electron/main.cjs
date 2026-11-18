@@ -54,7 +54,15 @@ function createBrowserTab(rawUrl, requestedId) {
       partition: "persist:park-dedeman"
     }
   });
-  const item = { view, url: rawUrl, title: new URL(rawUrl).hostname, bounds: { x: 0, y: 120, width: 1200, height: 700 } };
+  const parsedUrl = new URL(rawUrl);
+  // Electron's default UA advertises the Electron runtime. WhatsApp Web may reject
+  // that browser identity, so present the Chromium engine version without the Electron token.
+  if (parsedUrl.hostname === "web.whatsapp.com" || parsedUrl.hostname.endsWith(".whatsapp.com")) {
+    const chromeVersion = (process.versions.chrome || "132.0.0.0").split(".").slice(0, 3).join(".");
+    const ua = `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+    view.webContents.setUserAgent(ua);
+  }
+  const item = { view, url: rawUrl, title: parsedUrl.hostname, bounds: { x: 0, y: 120, width: 1200, height: 700 } };
   views.set(id, item);
 
   view.webContents.setWindowOpenHandler(({ url }) => {
