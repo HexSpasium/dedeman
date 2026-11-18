@@ -22,6 +22,9 @@ jobs:
         run: npm install
       - name: Build web interface
         run: npm run build
+        env:
+          VITE_SUPABASE_URL: https://oxvftybytcwpdcqygxpp.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_acZH00xxykLW9aPQzd2CxA_mt-UoTvR
       - name: Package Windows installer
         run: npx electron-builder --win nsis --x64
       - name: Upload EXE installer
