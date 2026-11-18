@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld("parkDedemanDesktop", Object.freeze({
   setAllowlist: domains => ipcRenderer.invoke("browser:set-allowlist", domains),
   openTab: (url, id) => ipcRenderer.invoke("browser:open", url, id),
   activateTab: id => ipcRenderer.invoke("browser:activate", id),
+  hideBrowser: () => ipcRenderer.invoke("browser:hide"),
   closeTab: id => ipcRenderer.invoke("browser:close", id),
   setBrowserBounds: rect => ipcRenderer.invoke("browser:bounds", rect),
   back: () => ipcRenderer.invoke("browser:back"),
