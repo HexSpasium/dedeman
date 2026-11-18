@@ -7,13 +7,14 @@ const isDev = !app.isPackaged;
 const views = new Map();
 let activeTabId = null;
 let allowedHosts = new Set();
+const trustedHosts = new Set(["hexspasium.github.io"]);
 
 function hostAllowed(rawUrl) {
   try {
     const u = new URL(rawUrl);
     if (u.protocol !== "https:" && !(isDev && u.protocol === "http:" && u.hostname === "localhost")) return false;
     const host = u.hostname.toLowerCase();
-    return [...allowedHosts].some(rule => host === rule || host.endsWith("." + rule));
+    return [...allowedHosts, ...trustedHosts].some(rule => host === rule || host.endsWith("." + rule));
   } catch { return false; }
 }
 
